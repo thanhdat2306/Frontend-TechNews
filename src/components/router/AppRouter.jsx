@@ -15,7 +15,7 @@ const AppRouter = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<Body />} />
-                <Route path="/Post" element={<Body content={<Post/>}/>} />
+                <Route path="/post/:id" element={<Body content={<Post/>}/>} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
