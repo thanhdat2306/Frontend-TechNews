@@ -9,13 +9,13 @@ const NavigantionBar = () => {
         <aside className='w-[15.8%] h-[100vh] fixed left-0 z-49'>
             <div className='flex flex-col overflow-x-hidden overflow-y-auto h-full no-scrollbar pt-[32px] pb-[16px] text-gray-600 dark:text-[#a8b3cf] border-r-[1px] border-gray-700 text-[14px] gap-[20px]'>
                 <ul>
-                    <NavTag Icon={faFire} Tag='My Feed'/>
-                    <NavTag Icon={faMessage} Tag='Custom Feed'/>
+                    <NavTag Icon={faFire} Tag='My Feed' to="/" />
+                    <NavTag Icon={faMessage} Tag='Custom Feed' to="/customfeed" />
                 </ul>
-                <ListNavTag Name='Posts' Array={[{tag: 'My Post', icon: faUsers}, {tag: 'Public Post', icon: faGlobe}]}/>
-                <ListNavTag Name='Tags' Array={[{tag: 'Explore', icon: faFire}, {tag: 'Dicussion', icon: faMessage}, {tag: 'Tag', icon: faTag}]}/>
-                <ListNavTag Name='Activity' Array={[{tag: 'Bookmarks', icon: faBookmark}, {tag: 'History', icon: faHistory}]}/>
-                <ListNavTag Name='' Array={[{tag: 'Docs', icon: faFile}, {tag: 'Changelog', icon: faLink}, {tag: 'Feedback', icon: faComments}]}/>
+                <ListNavTag Name='Posts' Array={[{tag: 'My Post', icon: faUsers, to: '/mypost'}, {tag: 'Public Post', icon: faGlobe, to: '/publicpost'}]} />
+                <ListNavTag Name='Tags' Array={[{tag: 'Explore', icon: faFire, to: '/explore'}, {tag: 'Discussion', icon: faMessage, to: '/discussion'}, {tag: 'Tag', icon: faTag, to: '/tag'}]} />
+                <ListNavTag Name='Activity' Array={[{tag: 'Bookmarks', icon: faBookmark, to: '/bookmarks'}, {tag: 'History', icon: faHistory, to: '/history'}]} />
+                <ListNavTag Name='' Array={[{tag: 'Docs', icon: faFile, to: '/docs'}, {tag: 'Changelog', icon: faLink, to: '/changelog'}, {tag: 'Feedback', icon: faComments, to: '/feedback'}]} />
             </div>
         </aside>
     )

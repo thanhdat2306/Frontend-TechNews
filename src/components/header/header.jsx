@@ -17,12 +17,12 @@ const Header = () => {
             <a href='./'><img src={Techlogo} alt="Tech logo" className='h-[30px] w-auto'/></a>
             <div className='flex flex-row gap-[12px]'>
                 <SquareButton content={
-                    <Link to="/settings">
+                    <Link to="/create">
                         <FontAwesomeIcon icon={faPlus} className='icon-border' />
                     </Link>   
                 } />
                 <SquareButton content={
-                    <Link to="/">
+                    <Link to="/notifications">
                         <FontAwesomeIcon icon={faBell} className='icon-border' />
                     </Link>  
                 } />
