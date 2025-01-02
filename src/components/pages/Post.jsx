@@ -16,7 +16,7 @@ const Post = () => {
 
     useEffect(() => {
         // Fetch post data by ID
-        fetch(`https://dev.to/api/articles/${id}`)
+        fetch(`http://localhost:3000/api/posts/${id}`)
             .then(response => response.json())
             .then(data => setPost(data))
             .catch(error => console.error('Error fetching post:', error));
@@ -29,13 +29,13 @@ const Post = () => {
     const {
         title,
         description,
-        readable_publish_date,
-        cover_image,
-        comments_count,
-        public_reactions_count,
-        tags,
-        body_html,
-        user,
+        createdAt,
+        thumbnail,
+        totalCommentsCount,
+        upvotesCount,
+        tagsId,
+        content,
+        authorId,
         organization
     } = post;
 
@@ -49,30 +49,30 @@ const Post = () => {
                     </p>
                 </div>
                 <div className='flex flex-row gap-[10px]'>
-                    {tags.map((tag) => (
+                    {tagsId.map((tag) => (
                         <Tag key={tag} tagName={`#${tag}`} PostStyle={true} />
                     ))}
                 </div>
                 <div>
-                    <DatePost Data={readable_publish_date} PostStyle={true} />
+                    <DatePost Data={createdAt} PostStyle={true} />
                 </div>
                 <div>
-                    <img src={cover_image} alt="" className='rounded-xl' />
+                    <img src={thumbnail} alt="" className='rounded-xl' />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: body_html }} />
+                <div dangerouslySetInnerHTML={{ __html: content }} />
                 <div className='flex flex-col'>
                     <div className='flex flex-row gap-[10px] text-gray-400 my-[10px]'>
-                        <span>{public_reactions_count} Upvotes</span>
-                        <span>{comments_count} Comments</span>
+                        <span>{upvotesCount} Upvotes</span>
+                        <span>{totalCommentsCount} Comments</span>
                     </div>
-                    <ControlCard vote={public_reactions_count} comment={comments_count} PostStyle={true} />
+                    <ControlCard vote={upvotesCount} comment={totalCommentsCount} PostStyle={true} />
                 </div>
                 
                 <UserComment Text='Share your thoughts' Type='Text' />
                 <ListComment />
             </main>
             <aside className='flex flex-col w-[33.5%] border-r-[1px] border-gray-400 dark:border-gray-700 px-[16px] py-[32px]'>
-                <UserCard user={user} organization={organization} />
+                <UserCard user={authorId} organization={organization} />
             </aside>
         </div>
     );

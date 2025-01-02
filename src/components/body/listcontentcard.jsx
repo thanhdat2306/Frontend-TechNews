@@ -12,58 +12,30 @@ const ListContentCard = ({ width = 'w-[84.2%]' }) => {
   // Hàm fetch dữ liệu từ API
   const fetchPosts = async () => {
     try {
-      const response = await fetch('https://dev.to/api/articles');
-      const postsData = await response.json();
-      console.log(postsData);
-      const combinedData = postsData.map((post) => ({
-        type_of: post.type_of,
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        readable_publish_date: post.readable_publish_date,
-        slug: post.slug,
-        path: post.path,
-        url: post.url,
-        comments_count: post.comments_count,
-        public_reactions_count: post.public_reactions_count,
-        collection_id: post.collection_id,
-        published_timestamp: post.published_timestamp,
-        positive_reactions_count: post.positive_reactions_count,
-        cover_image: post.cover_image,
-        social_image: post.social_image,
-        canonical_url: post.canonical_url,
-        created_at: post.created_at,
-        edited_at: post.edited_at,
-        crossposted_at: post.crossposted_at,
-        published_at: post.published_at,
-        last_comment_at: post.last_comment_at,
-        reading_time_minutes: post.reading_time_minutes,
-        tag_list: post.tag_list,
-        tags: post.tags,
-        user: {
-          name: post.user.name,
-          username: post.user.username,
-          twitter_username: post.user.twitter_username,
-          github_username: post.user.github_username,
-          user_id: post.user.user_id,
-          website_url: post.user.website_url,
-          profile_image: post.user.profile_image,
-          profile_image_90: post.user.profile_image_90
+      const response = await fetch('http://localhost:4000/api/posts/search?size=5&page=1&sortField=createdAt&sortType=desc', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        organization: post.organization ? {
-          name: post.organization.name,
-          username: post.organization.username,
-          slug: post.organization.slug,
-          profile_image: post.organization.profile_image,
-          profile_image_90: post.organization.profile_image_90
-        } : null
-      }));
-
-      setData(combinedData);
-      setLoading(false); // Tắt chế độ loading
+        body: JSON.stringify({}) // Thêm body nếu cần thiết
+      });
+  
+      console.log('Response status:', response.status); // Kiểm tra trạng thái phản hồi
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log('Result:', result); // Kiểm tra dữ liệu trả về
+      if (result.success) {
+        setData(result.data);
+      } else {
+        console.error('Error fetching posts:', result.message);
+      }
     } catch (error) {
       console.error('Error fetching posts:', error);
-      setLoading(false);
+    } finally {
+      setLoading(false); // Tắt chế độ loading
     }
   };
 
@@ -87,19 +59,19 @@ const ListContentCard = ({ width = 'w-[84.2%]' }) => {
           <div className='flex flex-row flex-wrap justify-center items-center gap-[30px] w-[100%]'>
             {data.map((da, index) => (
                 <ContentCard
-                ID = {da.id}
+                ID={da._id}
                 key={index} 
                 Title={da.title} 
-                Image={da.cover_image} 
-                Author={da.user.name} 
-                Date={da.readable_publish_date} 
-                Description={da.description} 
+                Image={da.thumbnail} 
+                Author={da.authorId} 
+                Date={da.createdAt} 
+                Description={da.content} 
                 Url={da.url} 
-                CommentsCount={da.comments_count} 
-                ReactionsCount={da.public_reactions_count} 
-                ReadingTime={da.reading_time_minutes} 
-                Tags={da.tag_list} 
-                UserProfileImage={da.user.profile_image} 
+                CommentsCount={da.totalCommentsCount} 
+                ReactionsCount={da.upvotesCount} 
+                ReadingTime={da.readingTime} 
+                Tags={da.tagsId} 
+                UserProfileImage={da.userProfileImage} 
                 Organization={da.organization ? da.organization.name : null} 
               />
             ))}
