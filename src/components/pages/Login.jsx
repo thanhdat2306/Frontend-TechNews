@@ -18,7 +18,8 @@ const Login = () => {
         const result = await signin(email, password);
         if (result.success) {
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('user', JSON.stringify(result.user)); // Lưu thông tin người dùng
+            localStorage.setItem('user', JSON.stringify(result.user));
+            localStorage.setItem('token', result.token); // Lưu thông tin người dùng
             navigate('/');
         } else {
             console.error('Login failed:', result.message);

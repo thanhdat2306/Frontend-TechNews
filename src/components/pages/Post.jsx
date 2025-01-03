@@ -9,6 +9,7 @@ import Comment from '../comment/comment.jsx';
 import UserComment from '../comment/user_comment.jsx';
 import ListComment from '../comment/listcomment.jsx';
 import UserCard from '../card/usercard.jsx';
+import { API_ENDPOINTS } from '../../config';
 
 const Post = () => {
     const { id } = useParams();
@@ -17,7 +18,7 @@ const Post = () => {
 
     useEffect(() => {
         // Fetch post data by ID
-        fetch(`http://localhost:4000/api/posts/${id}`)
+        fetch(`${API_ENDPOINTS.POSTS}/${id}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -29,7 +30,7 @@ const Post = () => {
             .catch(error => console.error('Error fetching post:', error));
 
         // Fetch comments for the post
-        fetch(`http://localhost:4000/api/posts/${id}/comments`)
+        fetch(`${API_ENDPOINTS.POSTS}/${id}/comments`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -41,7 +42,7 @@ const Post = () => {
             .catch(error => console.error('Error fetching comments:', error));
 
         // Increase view count
-        fetch(`http://localhost:4000/api/posts/${id}/view`, {
+        fetch(`${API_ENDPOINTS.POSTS}/${id}/view`, {
             method: 'PATCH',
         })
         .then(response => {

@@ -1,5 +1,7 @@
+import { API_ENDPOINTS } from '../../config';
+
 export const signup = async (username, email, password) => {
-    const response = await fetch('http://localhost:4000/api/auth/signup', {
+    const response = await fetch(API_ENDPOINTS.SIGNUP, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -10,7 +12,7 @@ export const signup = async (username, email, password) => {
 };
 
 export const signin = async (email, password) => {
-    const response = await fetch('http://localhost:4000/api/auth/signin', {
+    const response = await fetch(API_ENDPOINTS.SIGNIN, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
