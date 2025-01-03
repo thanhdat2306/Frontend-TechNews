@@ -12,6 +12,8 @@ import Header from '../header/header.jsx';
 import NavigantionBar from '../navigation/navigation_bar.jsx';
 import ListContentCard from '../body/listcontentcard.jsx';
 import CreatePost from '../pages/CreatePost.jsx'; 
+import EditProfile from '../pages/EditProfile.jsx';
+
 const AppRouter = () => {
     return (
         <Router>
@@ -37,7 +39,9 @@ const AppRouter = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/user" element={<Body content={<User/>}/>} />
-                
+                <Route path="/profile" element={<Body content={<Profile/>}/>} />
+                <Route path="/edit-profile" element={<Body content={<EditProfile/>}/>} />
+
             </Routes>
         </Router>
     );
