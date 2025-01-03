@@ -38,21 +38,21 @@ const ContentCard = ({
   return (
     <>
       <button
-        className='flex flex-col p-[8px] rounded-[16px] w-[26.7%] min-w-[24.8%] h-[386px] border-[1px] bg-slate-100 text-[#333] border-gray-400 dark:bg-[#1c1f26] dark:text-[#fff] dark:border-gray-800 hover:border-gray-600'
+        className='flex flex-col p-[8px] rounded-[16px] w-full md:w-[26.7%] min-w-[262px] h-[386px] border-[1px] bg-slate-100 text-[#333] border-gray-400 dark:bg-[#1c1f26] dark:text-[#fff] dark:border-gray-800 hover:border-gray-600'
         onClick={handleCardClick}
       >
         <div className='flex flex-col px-[6px] justify-between items-start flex-1'>
           <div className='flex flex-col w-full'>
             <div className='flex justify-center items-center size-8'>
-              <img className='rounded-[50%]' src={UserProfileImage || User} alt="" />
+              <img className='rounded-full w-full h-full' src={UserProfileImage || User} alt="" />
             </div>
             <span className='text-2xl text-wrap font-bold text-left w-full max-h-[64px] truncate'>{Title}</span>
 
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col items-start w-full'>
             <div className='flex flex-row gap-[10px] py-[8px]'>
                 {tagsArray.slice(0, 3).map((tag) => (
-                    <Tag key={tag} tagName={`#${tag}`} />
+                    <Tag key={tag.id} tagName={`#${tag.name}`} />
                 ))}
                 {tagsArray.length > 3 && (
                     <Tag key="more-tags" tagName={`+${tagsArray.length - 3} more`} />

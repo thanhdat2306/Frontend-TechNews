@@ -13,14 +13,52 @@ import UserCard from '../card/usercard.jsx';
 const Post = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [comments, setComments] = useState([]);
 
     useEffect(() => {
         // Fetch post data by ID
-        fetch(`https://dev.to/api/articles/${id}`)
+        fetch(`http://localhost:4000/api/posts/${id}`)
             .then(response => response.json())
-            .then(data => setPost(data))
+            .then(data => {
+                if (data.success) {
+                    setPost(data.data);
+                } else {
+                    console.error('Error fetching post:', data.message);
+                }
+            })
             .catch(error => console.error('Error fetching post:', error));
+
+        // Fetch comments for the post
+        fetch(`http://localhost:4000/api/posts/${id}/comments`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setComments(data.data);
+                } else {
+                    console.error('Error fetching comments:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching comments:', error));
+
+        // Increase view count
+        fetch(`http://localhost:4000/api/posts/${id}/view`, {
+            method: 'PATCH',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success) {
+                console.error('Error increasing view count:', data.message);
+            }
+        })
+        .catch(error => console.error('Error increasing view count:', error));
     }, [id]);
+
+
 
     if (!post) {
         return <div>Loading...</div>;
@@ -28,51 +66,50 @@ const Post = () => {
 
     const {
         title,
-        description,
-        readable_publish_date,
-        cover_image,
-        comments_count,
-        public_reactions_count,
-        tags,
-        body_html,
-        user,
-        organization
+        content,
+        thumbnail,
+        authorId,
+        categoryId,
+        tagsId,
+        createdAt,
+        upvotesCount,
+        totalCommentsCount
     } = post;
 
     return (
         <div className='flex flex-row w-[84.2%] px-[130px] text-black dark:text-white font-[17px]'>
             <main className='flex flex-col pt-[32px] px-[32px] border-x-[1px] border-gray-400 dark:border-gray-700 w-[66.5%] gap-[24px]'>
                 <span className='text-[32px] font-bold mt-[24px]'>{title}</span>
-                <div className='border-l-[1px] border-purple-500 px-[16px] '>
+                {/* <div className='border-l-[1px] border-purple-500 px-[16px] '>
                     <p>
-                        <span className='text-purple-500'>TLDR</span> {description}
+                        <span className='text-purple-500'>TLDR</span> {content}
                     </p>
-                </div>
+                </div> */}
                 <div className='flex flex-row gap-[10px]'>
-                    {tags.map((tag) => (
-                        <Tag key={tag} tagName={`#${tag}`} PostStyle={true} />
+                    {tagsId.map((tag) => (
+                        <Tag key={tag._id} tagName={`#${tag.name}`} PostStyle={true} />
                     ))}
                 </div>
                 <div>
-                    <DatePost Data={readable_publish_date} PostStyle={true} />
+                    <DatePost Data={createdAt} PostStyle={true} />
                 </div>
                 <div>
-                    <img src={cover_image} alt="" className='rounded-xl' />
+                    <img src={thumbnail} alt="" className='rounded-xl' />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: body_html }} />
+                <div dangerouslySetInnerHTML={{ __html: content }} />
                 <div className='flex flex-col'>
                     <div className='flex flex-row gap-[10px] text-gray-400 my-[10px]'>
-                        <span>{public_reactions_count} Upvotes</span>
-                        <span>{comments_count} Comments</span>
+                        <span>{upvotesCount} Upvotes</span>
+                        <span>{totalCommentsCount} Comments</span>
                     </div>
-                    <ControlCard vote={public_reactions_count} comment={comments_count} PostStyle={true} />
+                    <ControlCard vote={upvotesCount} comment={totalCommentsCount} PostStyle={true} />
                 </div>
                 
                 <UserComment Text='Share your thoughts' Type='Text' />
-                <ListComment />
+                <ListComment comments={comments} />
             </main>
             <aside className='flex flex-col w-[33.5%] border-r-[1px] border-gray-400 dark:border-gray-700 px-[16px] py-[32px]'>
-                <UserCard user={user} organization={organization} />
+                <UserCard user={authorId} organization={categoryId.name} />
             </aside>
         </div>
     );
