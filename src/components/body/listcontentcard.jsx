@@ -12,7 +12,7 @@ const ListContentCard = ({ width = 'w-[84.2%]' }) => {
   // Hàm fetch dữ liệu từ API
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/posts/search?size=5&page=1&sortField=createdAt&sortType=desc', {
+      const response = await fetch('http://localhost:4000/api/posts/search?size=9&page=1&sortField=createdAt&sortType=desc', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -63,15 +63,16 @@ const ListContentCard = ({ width = 'w-[84.2%]' }) => {
                 key={index} 
                 Title={da.title} 
                 Image={da.thumbnail} 
-                Author={da.authorId} 
+                Author={da.authorId.profile.name} 
                 Date={da.createdAt} 
                 Description={da.content} 
                 Url={da.url} 
                 CommentsCount={da.totalCommentsCount} 
                 ReactionsCount={da.upvotesCount} 
                 ReadingTime={da.readingTime} 
-                Tags={da.tagsId} 
-                UserProfileImage={da.userProfileImage} 
+                Tags={da.tagsId}
+                Category={da.categoryId}
+                UserProfileImage={da.authorId.profile.avatar} 
                 Organization={da.organization ? da.organization.name : null} 
               />
             ))}
