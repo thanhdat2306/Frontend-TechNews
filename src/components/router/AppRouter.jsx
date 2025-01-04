@@ -13,6 +13,7 @@ import NavigantionBar from '../navigation/navigation_bar.jsx';
 import ListContentCard from '../body/listcontentcard.jsx';
 import CreatePost from '../pages/CreatePost.jsx'; 
 import EditProfile from '../pages/EditProfile.jsx';
+import ForgotPassword from '../pages/ForgotPassword.jsx';
 
 const AppRouter = () => {
     return (
@@ -41,6 +42,7 @@ const AppRouter = () => {
                 <Route path="/user" element={<Body content={<User/>}/>} />
                 <Route path="/profile" element={<Body content={<Profile/>}/>} />
                 <Route path="/edit-profile" element={<Body content={<EditProfile/>}/>} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
             </Routes>
         </Router>

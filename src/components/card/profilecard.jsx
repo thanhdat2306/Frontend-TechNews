@@ -21,6 +21,14 @@ const ProfileCard = () => {
         }
     };
 
+    const handleProfileClick = () => {
+        navigate('/profile');
+    }
+
+    const handleAccountDetailClick = () => {
+        navigate('/edit-profile');
+    }
+
     const handleLogoutClick = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('user');
@@ -46,8 +54,8 @@ const ProfileCard = () => {
                 </div>
             </div>
             <ul className='flex flex-col py-[8px]'>
-                <ProfileBtnCard Tag='Profile' Icon={faUser} />
-                <ProfileBtnCard Tag='Account detail' Icon={faPen} />
+                <ProfileBtnCard Tag='Profile' Icon={faUser} Handle={handleProfileClick}/>
+                <ProfileBtnCard Tag='Account detail' Icon={faPen} Handle={handleAccountDetailClick}/>
                 <ProfileBtnCard Tag='Invite' Icon={faUserFriends} />
                 <ProfileBtnCard Tag='Darkmode' Icon={faCircleHalfStroke} Handle={handleRemoveDarkMode} />
                 <ProfileBtnCard Tag='Log out' Icon={faRightFromBracket} Handle={handleLogoutClick} />

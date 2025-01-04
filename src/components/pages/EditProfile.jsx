@@ -1,44 +1,174 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const EditProfile = () => {
-    return (
-    <div class="mx-auto flex flex-col content-center items-stretch pt-0 h-[100vh] ">
-        <h1 class="text-2xl font-bold mt-4">Edit Profile</h1>
-        <form id="editProfileForm" action="/edit-profile" method="POST">
-          <div class="flex justify-center items-center gap-4 self-start">
-            <button type="button" class="px-9 py-9 rounded border dark:border-bg-white dark:border-bg-dark max-w-[250px] flex flex-row gap-1 justify-center items-center text-dark-700 dark:text-white hover:text-primary hover:border-primary transition">
-              <input type="file" id="avatarInput" name="avatar" class="hidden" />
-              <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M149.1 64.8L138.7 96 64 96C28.7 96 0 124.7 0 160L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-74.7 0L362.9 64.8C356.4 45.2 338.1 32 317.4 32L194.6 32c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
-              <span>User Picture</span>
-            </button>   
-            <div class="w-40 h-40 rounded-full overflow-hidden mb-6 shadow-lg">
-              {/* <img id="imagePreview" src="<%= user.avatar %>" alt="image" class="w-full h-full object-cover object-center" /> */}
+  const [user, setUser] = useState({
+    name: '',
+    username: '',
+    email: '',
+    bio: '',
+    avatar: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
+
+  const fetchUserData = async () => {
+     try {
+      const response = await fetch(`http://localhost:4000/api/users/${currentUser._id}`);
+      const result = await response.json();
+      if (result.success) {
+        const userData = result.data;
+        setUser({
+          name: userData.profile.name,
+          username: userData.username,
+          email: userData.email,
+          bio: userData.profile.bio,
+          avatar: userData.profile.avatar
+        });
+      } else {
+        console.error('Error fetching user data:', result.message);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUser(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUser(prevState => ({
+          ...prevState,
+          avatar: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+      setAvatarFile(file);
+    } else {
+      console.error('Invalid file type. Please select a JPEG, JPG, or PNG file.');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    let avatarUrl = user.avatar;
+
+    if (avatarFile) {
+      const formData = new FormData();
+      formData.append('image', avatarFile);
+
+      try {
+        const uploadResponse = await fetch('http://localhost:4000/api/posts/uploads', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          avatarUrl = uploadResult.data.url;
+        } else {
+          console.error('Error uploading avatar:', uploadResult.message);
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error);
+      }
+    }
+
+    const updatedUser = {
+      username: user.username,
+      email: user.email,
+      profile: {
+        name: user.name,
+        avatar: avatarUrl,
+        bio: user.bio
+      }
+    };
+
+    try {
+      const response = await fetch(`http://localhost:4000/api/users/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedUser)
+      });
+      const result = await response.json();
+      if (result.success) {
+        console.log('Profile updated successfully');
+        localStorage.setItem('user', JSON.stringify(result.data));
+      } else {
+        console.error('Error updating profile:', result.message);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {loading ? (
+        <p className='flex justify-center w-[100%] text-[26px]'>Loading...</p>
+      ) : (
+        <div className="mx-auto flex flex-col content-center items-stretch pt-0 h-[100vh] ">
+          <h1 className="text-2xl font-bold mt-4">Edit Profile</h1>
+          <form id="editProfileForm" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-4 self-start">
+              <label htmlFor="avatar" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Profile Picture</label>
+              <input type="file" id="avatarInput" name="avatar" className="hidden" onChange={handleAvatarChange} />
+              <button type="button" className="rounded dark:border-bg-white dark:border-bg-dark max-w-[250px] flex flex-row justify-center items-center mx-auto text-dark-700 dark:text-white hover:text-primary hover:border-primary transition" onClick={() => document.getElementById('avatarInput').click()}>
+                <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg">
+                  <img id="imagePreview" src={user.avatar} alt="User Avatar" className="w-full h-full object-cover object-center" />
+                </div>
+              </button>
             </div>
-          </div>
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-            <input type="text" name="name" id="name" value="<%= user.name %>" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"/>
-          </div>
-          <div class="mb-4">
-            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-            <input type="text" name="username" id="username" value="<%= user.username %>" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"/>
-          </div>
-          <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" name="email" id="email" value="<%= user.email %>" class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"/>
-          </div>
-          <div class="mb-4">
-            <label for="bio" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bio</label>
-            <textarea name="description" id="description" class="mt-1 block w-full h-[100px] border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"></textarea>
-          </div>
-          <div class="flex flex-row gap-[10px]">
-            <button type="submit" class="px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-800 transition ease-in-out duration-150">Save Changes</button>
-            <button type="button" class="px-4 py-2 bg-red-500 dark:bg-red-700 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-800 transition ease-in-out duration-150">Reset Password</button>
-          </div>
-  
-        </form>
-      </div>
-    );
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+              <input type="text" name="name" id="name" value={user.name} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+              <input type="text" name="username" id="username" value={user.username} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+              <input type="email" name="email" id="email" value={user.email} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bio</label>
+              <textarea name="bio" id="bio" value={user.bio} onChange={handleInputChange} className="mt-1 block w-full h-[100px] border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"></textarea>
+            </div>
+            <div className="flex flex-row gap-[10px]">
+              <button type="submit" className="px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-800 transition ease-in-out duration-150">Save Changes</button>
+              <button type="button" className="px-4 py-2 bg-red-500 dark:bg-red-700 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-800 transition ease-in-out duration-150">Reset Password</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default EditProfile;

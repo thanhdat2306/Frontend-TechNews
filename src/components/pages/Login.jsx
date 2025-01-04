@@ -19,6 +19,7 @@ const Login = () => {
         if (result.success) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user', JSON.stringify(result.user)); // Lưu thông tin người dùng
+            localStorage.setItem('token', result.token); // Lưu token
             navigate('/');
         } else {
             console.error('Login failed:', result.message);
@@ -37,7 +38,8 @@ const Login = () => {
                     <InputSign Icon={faLock} Text='Password' Type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     <CustomButton white={true} width='w-[36.1%]' content={<span className='text-[16px] font-bold'>Log in</span>} />
                 </form>
-                <div className='flex justify-center pt-[12px] border-t-[1px] w-full border-gray-700'>
+                <div className='flex flex-col items-center justify-center pt-[12px] border-t-[1px] w-full border-gray-700'>
+                    <span className='text-[14px]' text-center>Forgot your password? <a href="./forgot-password" className='text-white underline'> Reset it</a></span>
                     <span className='text-[14px]' text-center>Not a member yet? <a href="./signup" className='text-white underline'> Sign up</a></span>
                 </div>
             </div>
