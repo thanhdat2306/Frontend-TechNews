@@ -21,3 +21,10 @@ export const signin = async (email, password) => {
     });
     return response.json();
 };
+
+export const logoutUser = (navigate) => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };

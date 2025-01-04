@@ -59,7 +59,9 @@ const Post = () => {
         .catch(error => console.error('Error increasing view count:', error));
     }, [id]);
 
-
+    const addComment = (newComment) => {
+        setComments((prevComments) => [...prevComments, newComment]);
+    };
 
     if (!post) {
         return <div>Loading...</div>;
@@ -103,14 +105,20 @@ const Post = () => {
                         <span>{upvotesCount} Upvotes</span>
                         <span>{totalCommentsCount} Comments</span>
                     </div>
-                    <ControlCard vote={upvotesCount} comment={totalCommentsCount} PostStyle={true} />
+                    <ControlCard vote={upvotesCount} comment={totalCommentsCount} PostStyle={true} postId={id}/>
                 </div>
                 
-                <UserComment Text='Share your thoughts' Type='Text' />
+                <UserComment postId={id} addComment={addComment} />
                 <ListComment comments={comments} />
             </main>
             <aside className='flex flex-col w-[33.5%] border-r-[1px] border-gray-400 dark:border-gray-700 px-[16px] py-[32px]'>
-                <UserCard user={authorId} organization={categoryId.name} />
+            <UserCard 
+                    Image={authorId.profile.avatar} 
+                    Name={authorId.profile.name} 
+                    Username={authorId.username} 
+                    Organization={categoryId.name}
+                    userId={authorId._id}
+                />
             </aside>
         </div>
     );

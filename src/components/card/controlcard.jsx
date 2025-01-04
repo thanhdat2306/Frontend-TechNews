@@ -11,7 +11,7 @@ const ControlCard = ({ vote, comment = 0, PostStyle = false, postId }) => {
       {PostStyle ? (
         <div className='flex border-[1px] border-gray-700 rounded-[16px] flex-row justify-between items-center text-[20px] text-gray-500 dark:text-[#A8B3CF] mt-[8px]'>
           <div className='flex flex-row items-center border-[1px] border-gray-700 rounded-[16px] p-[8px] bg-gray-200 dark:bg-[#1c1f26] h-[100%] gap-[10px]'>
-            <UpVoteButton size='size-10' postId={postId} />
+            <UpVoteButton upvote={vote} size='size-10' postId={postId} />
             <DownVoteButton size='size-10' postId={postId} />
           </div>
           <CommentButton comment='Comment' size='size-10' gap='[2px]' />
