@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
 import AppRouter from './components/router/AppRouter.jsx';
+
+
+// Notification when follow up posts
+
+
 function App() {
   useEffect(() => {
     const darkMode = localStorage.getItem('darkMode');
