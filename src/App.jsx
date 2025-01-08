@@ -3,7 +3,7 @@ import AppRouter from './components/router/AppRouter.jsx';
 
 
 // Notification when follow up posts
-
+// Notification when user comment 
 
 function App() {
   useEffect(() => {
