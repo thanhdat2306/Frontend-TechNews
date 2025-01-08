@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import AppRouter from './components/router/AppRouter.jsx';
 
 
-// Notification when follow up post
+// Notification when user comments
 
 
 function App() {
